@@ -1,6 +1,7 @@
 from bson import ObjectId
 from fastapi import APIRouter, status,Response
-from bson import ObjectId
+from pymongo import MongoClient
+from bson.objectid import ObjectId
 from starlette.status import HTTP_204_NO_CONTENT
 from fastapi import HTTPException
 from models.materia import Materia
