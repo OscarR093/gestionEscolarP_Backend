@@ -6,6 +6,7 @@ from starlette.status import HTTP_204_NO_CONTENT
 from fastapi import HTTPException
 
 from models.maestro import Maestro
+from models.queryModel import QueryModel
 from database import db
 from schemas.maestro import userEntity, usersEntity
 
@@ -75,3 +76,26 @@ async def delete_user(id: str):
     
     # Responde con un código 204 sin contenido
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@router.post("/search/")
+def search_by_field(query: QueryModel):
+    """
+    Busca documentos en la colección utilizando un campo y valor dinámico.
+    """
+    try:
+        # Construir el filtro dinámico
+        filtro = {query.field: query.value}
+        resultados = list(db.maestros.find(filtro))
+
+        if not resultados:
+            raise HTTPException(status_code=404, detail="No se encontraron documentos que coincidan con el criterio")
+        
+        # Convertir ObjectId a string
+        for resultado in resultados:
+            if "_id" in resultado:
+                resultado["id"] = str(resultado["_id"])
+                resultado.pop("_id")
+
+        return resultados
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
