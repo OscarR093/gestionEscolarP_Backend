@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, Query
-from routes import maestros, materias, horarios
+from routes import maestros, materias, horarios, users
 from dotenv import load_dotenv
 import os
 
@@ -16,6 +16,7 @@ async def verify_api_key(api_key: str = Query(...)):
 app = FastAPI()
 
 # Registrar rutas con dependencia para verificar API Key
+app.include_router(users.router, prefix="/users", dependencies=[Depends(verify_api_key)], tags=["Usuarios"])
 app.include_router(maestros.router, prefix="/maestros", dependencies=[Depends(verify_api_key)], tags=["Maestros"])
 app.include_router(materias.router, prefix="/materias", dependencies=[Depends(verify_api_key)], tags=["Materias"])
 app.include_router(horarios.router, prefix="/horarios", dependencies=[Depends(verify_api_key)], tags=["Horarios"])

@@ -1,6 +1,5 @@
 from bson import ObjectId
 from fastapi import APIRouter, status,Response
-from pymongo import MongoClient
 from bson.objectid import ObjectId
 from starlette.status import HTTP_204_NO_CONTENT
 from fastapi import HTTPException
@@ -75,7 +74,7 @@ async def delete_user(id: str):
     db.maestros.find_one_and_delete({"_id": ObjectId(id)})
     
     # Responde con un código 204 sin contenido
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return Response(status_code=HTTP_204_NO_CONTENT)
 
 @router.post("/search/")
 def search_by_field(query: QueryModel):
